@@ -31,7 +31,7 @@ var myAnimation = new Animation("canvas");
                     this.collision = 1.8;
                 	//this.colors = ["red", "green", "blue", "black", "grey"];
                 	this.color = "black"//this.colors[Math.floor(Math.random() * 5)];
-                	this.drawMe = function(Animation, linearDistEachFrame) {
+                	this.drawMe = function(linearDistEachFrame) {
                 		
                         
 
@@ -139,16 +139,15 @@ var myAnimation = new Animation("canvas");
                 	this.Event = function(upButton, downButton){
 	                	document.addEventListener('keydown', function(){
 						//83 = s, 87 = w, 40 = down, 38 = up
-							
-							if(that.y + that.height > canvas.height) that.y = canvas.height - that.height;
-							else if(that.y < 0) that.y = 0;	
-								
+	
 							if(event.keyCode == downButton && that.y + that.height < canvas.height) 
 								{
-									for(var i = 1; i < 31 ; i++)
+									for(var i = 1; i < 91 ; i++)
 									{
+
 										setTimeout(function() {
-											that.y+= that.distance / 30;
+											if(that.y + that.height + that.distance / 90 > canvas.height) that.y = canvas.height - that.height;
+											that.y+= that.distance / 90;
 											
 										}, 2 * i);
 									}
@@ -156,10 +155,12 @@ var myAnimation = new Animation("canvas");
 								}
 							else if(event.keyCode == upButton && that.y > 0) 
 								{
-									for(var i = 1; i < 31 ; i++)
+									for(var i = 1; i < 91 ; i++)
 									{
+							
 										setTimeout(function() {
-											that.y-= that.distance / 30;
+											if(that.y - that.distance / 90 < 0) that.y = 0;
+											that.y-= that.distance / 90;
 											
 										}, 2 * i);
 									}
@@ -186,13 +187,12 @@ var myAnimation = new Animation("canvas");
                 myAnimation.setDrawStage(function(){
                     // aktualizacja
                     var linearDistEachFrame = linearSpeed * this.getTimeInterval() / 1000;
-                    	
-                  		myAnimation.clear();
+                  	myAnimation.clear();
 
-                  		rocket.draw();
-                  		rocket_2.draw();
+                  	rocket.draw();
+                  	rocket_2.draw();
 
-                  		ball.drawMe(myAnimation, linearDistEachFrame);
+                  	ball.drawMe(linearDistEachFrame);
 
                 });
 
