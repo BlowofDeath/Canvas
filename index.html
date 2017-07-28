@@ -4,7 +4,8 @@
 
 </head>
 <body> 
-<canvas id="canvas" style="width:800; height:600; border: 1px solid black;">  Canvas nie działa </canvas>
+<div style="border: 1px solid black; width:800">
+<canvas id="canvas" style="width:800; height:600; border: 0px solid black;">  Canvas nie działa </canvas></div>
 
 <script type="text/javascript" src="animation.js"></script>
 <script type="text/javascript"> 
@@ -13,7 +14,7 @@
 
 
 
-window.onload = function() {
+//window.onload = function() {
 
 
 
@@ -25,15 +26,15 @@ var myAnimation = new Animation("canvas");
                 var createBall = function(){
                 	this.x = canvas.width / 2;
                 	this.y = canvas. height / 2;
-                	this.radius = 10;
+                	this.radius = 6;
                 	this.yInverse = Math.floor(Math.random() * 2);
                 	this.xInverse = Math.floor(Math.random() * 2);
                     this.collision = 1.8;
                 	//this.colors = ["red", "green", "blue", "black", "grey"];
-                	this.color = "black"//this.colors[Math.floor(Math.random() * 5)];
+                	this.color = "white"//this.colors[Math.floor(Math.random() * 5)];
                 	this.drawMe = function(linearDistEachFrame) {
                 		
-                        
+                        console.log(ball.x +":"+ ball.y);
 
                         //określa czy piłka uderzyła w rakietkę
                 		if(Math.round(this.y) >= rocket.y && Math.round(this.y) <= rocket.y + rocket.height && Math.round(this.x / 10) * 10 == rocket.x + rocket.width) 
@@ -133,13 +134,13 @@ var myAnimation = new Animation("canvas");
                 	this.distance = 50;
                 	var that = this;
                 	this.draw = function(){
-                		context.fillStyle = "black";
+                		context.fillStyle = "white";
                 		context.fillRect(this.x, this.y, this.width, this.height);
                 	}
                 	this.Event = function(upButton, downButton){
-	                	document.addEventListener('keydown', function(){
+	                	document.addEventListener('keydown', function(event){
 						//83 = s, 87 = w, 40 = down, 38 = up
-	
+							
 							if(event.keyCode == downButton && that.y + that.height < canvas.height) 
 								{
 									for(var i = 1; i < 91 ; i++)
@@ -189,6 +190,19 @@ var myAnimation = new Animation("canvas");
                     var linearDistEachFrame = linearSpeed * this.getTimeInterval() / 1000;
                   	myAnimation.clear();
 
+                  	context.fillStyle = "black";
+                  	context.fillRect(0, 0, canvas.width, canvas.height);
+
+                  	context.fillStyle = "grey";
+                  	for(var i = 0; i < canvas.height; i++)
+                  	{
+                  		if(i % 20 == 0)
+                  		{
+                  			context.fillRect(canvas.width / 2, i, 4, 8);
+                  		}
+                  		
+                  	}
+     
                   	rocket.draw();
                   	rocket_2.draw();
 
@@ -198,7 +212,7 @@ var myAnimation = new Animation("canvas");
 
            
                 myAnimation.start();
-            };
+           // };
 
 
 
