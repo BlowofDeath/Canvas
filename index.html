@@ -63,7 +63,7 @@ var myAnimation = new Animation("canvas");
                 			}
                         else if(Math.round(this.x) < this.radius) 
                         	{
-                        		PlayerOnePoints++;
+                        		PlayerTwoPoints++;
                         		this.collision = 1.8;
                         		this.x = canvas.width / 2;
                         		this.y = canvas.height / 2;
@@ -100,7 +100,7 @@ var myAnimation = new Animation("canvas");
                 		else {
                             if(Math.round(this.x) >= canvas.width - this.radius) 
                             {
-                            	PlayerTwoPoints++;
+                            	PlayerOnePoints++;
                             	this.collision = 1.8;
                         		this.x = canvas.width / 2;
                         		this.y = canvas.height / 2;
