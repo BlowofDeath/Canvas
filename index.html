@@ -25,7 +25,10 @@ var myAnimation = new Animation("canvas");
                 let PlayerOnePoints = 0;
                 let PlayerTwoPoints = 0;
 
-                var linearSpeed = 250; // pikseli / sekundę
+                let pong_sound = new Audio("pong_sound.mp3");
+
+                const speed = 250;
+                var linearSpeed = speed; // pikseli / sekundę
                 var createBall = function(){
                 	this.x = canvas.width / 2;
                 	this.y = canvas.height / 2;
@@ -37,7 +40,6 @@ var myAnimation = new Animation("canvas");
                 	this.color = "white"//this.colors[Math.floor(Math.random() * 5)];
                 	this.drawMe = function(linearDistEachFrame) {
                 		
-                        
 
                         //określa czy piłka uderzyła w rakietkę
                 		if(Math.round(this.y) >= rocket.y && Math.round(this.y) <= rocket.y + rocket.height && Math.round(this.x / 10) * 10 == rocket.x + rocket.width) 
@@ -45,6 +47,9 @@ var myAnimation = new Animation("canvas");
                                 //jeśli uderzyła w górną lub w dolną część odwraca tor lotu piłki i określa kierunek po kolizji
                 				this.xInverse = false;
                                 
+                				pong_sound.play();
+
+
                 				if(Math.round(this.y) >= rocket.y && Math.round(this.y) < rocket.y + rocket.height / 2 )
                 				{
                         
@@ -68,6 +73,9 @@ var myAnimation = new Animation("canvas");
                         		this.x = canvas.width / 2;
                         		this.y = canvas.height / 2;
                         		this.xInverse = false;
+                        		linearSpeed = speed;
+                        		rocket.setStartPosition();
+                        		rocket_2.setStartPosition();
                         	}
 
                         	
@@ -81,6 +89,8 @@ var myAnimation = new Animation("canvas");
                                 //jeśli uderzyła w górną lub w dolną część odwraca tor lotu piłki i określa kierunek po kolizji
                 				this.xInverse = true;
                                
+                				pong_sound.play();
+
                 				if(Math.round(this.y) >= rocket_2.y && Math.round(this.y) < rocket_2.y + rocket_2.height / 2 )
                 				{
                         
@@ -105,6 +115,9 @@ var myAnimation = new Animation("canvas");
                         		this.x = canvas.width / 2;
                         		this.y = canvas.height / 2;
                         		this.xInverse = true;
+                        		linearSpeed = speed;
+                        		rocket.setStartPosition();
+                        		rocket_2.setStartPosition();
                             }
                             
                         } 
@@ -153,13 +166,14 @@ var myAnimation = new Animation("canvas");
                 	this.distance = 10;
                 	var that = this;
                 	this.speed = 0;
+                	this.setStartPosition = function(){
+                		this.y = canvas.height / 2 - (this.height / 2);
+                	}
                 	this.draw = function(){
-
-                		
 
                 		if(this.speed >= 1 && this.speed <= this.distance) this.speed++;
                         else if(this.speed <= -1 && this.speed >= this.distance * -1) this.speed--;
-                        console.log(this.y + ":" + this.speed);
+                        
                         this.y += this.speed;
 
                         if(this.y + this.height >= canvas.height || this.y <= 0)
@@ -197,6 +211,7 @@ var myAnimation = new Animation("canvas");
 
 
                 var ball = new createBall();;
+                setInterval(function() {linearSpeed++;}, 400);
 
 
                 ///////////////////Rysowanie sceny - Pętla gry/////////
@@ -234,9 +249,6 @@ var myAnimation = new Animation("canvas");
                   		}
                   		
                   	}
-
-
-
 
                   	context.font = "30pt Calibri";
                   	context.fillStyle = "white";
