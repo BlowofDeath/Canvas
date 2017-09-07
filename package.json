@@ -1,0 +1,9 @@
+{
+  "name": "Ping-Pong",
+  "version": "0.0.1",
+  "description": "Pong Game",
+  "dependencies": {
+    "express": "^4.15.4",
+    "socket.io": "^2.0.3"
+  }
+}

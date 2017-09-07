@@ -1,0 +1,281 @@
+<html>
+<head> 
+
+
+</head>
+<body> 
+<div style="border: 1px solid black; width:800">
+<canvas id="canvas" style="width:800; height:600; border: 0px solid black;">  Canvas nie działa </canvas></div>
+
+<script type="text/javascript" src="animation.js"></script>
+<script type="text/javascript"> 
+
+
+
+
+
+//window.onload = function() {
+
+//Sockety
+	var socket = io();
+
+//<<<<<<<
+
+var myAnimation = new Animation("canvas");
+       var canvas = myAnimation.getCanvas();
+                var context = myAnimation.getContext();
+                
+                let PlayerOnePoints = 0;
+                let PlayerTwoPoints = 0;
+
+                let pong_sound = new Audio("pong_sound.mp3");
+
+                const speed = 250;
+                var linearSpeed = speed; // pikseli / sekundę
+                var createBall = function(){
+                	this.x = canvas.width / 2;
+                	this.y = canvas.height / 2;
+                	this.radius = 6;
+                	this.yInverse = Math.floor(Math.random() * 2);
+                	this.xInverse = Math.floor(Math.random() * 2);
+                    this.collision = 1.8;
+                	//this.colors = ["red", "green", "blue", "black", "grey"];
+                	this.color = "white"//this.colors[Math.floor(Math.random() * 5)];
+                	this.drawMe = function(linearDistEachFrame) {
+                		
+
+                        //określa czy piłka uderzyła w rakietkę
+                		if(Math.round(this.y) >= rocket.y && Math.round(this.y) <= rocket.y + rocket.height && Math.round(this.x / 10) * 10 == rocket.x + rocket.width) 
+                			{
+                                //jeśli uderzyła w górną lub w dolną część odwraca tor lotu piłki i określa kierunek po kolizji
+                				this.xInverse = false;
+                                
+                				pong_sound.play();
+
+
+                				if(Math.round(this.y) >= rocket.y && Math.round(this.y) < rocket.y + rocket.height / 2 )
+                				{
+                        
+                                    this.collision = (2 / (rocket.height / 2)) * (this.y - rocket.y);
+                					this.yInverse = true;
+                				}
+                				else if(Math.round(this.y) > rocket.y + rocket.height / 2 && Math.round(this.y) <= rocket.y + rocket.height)
+                				{
+                                    
+                                    this.collision = (2 / (rocket.height / 2)) * (rocket.height / 2-(this.y - rocket.y - rocket.height / 2)) ;
+                					this.yInverse = false;
+                				}
+                                //ustawia maksymalny kierunek nie mniejszy niż 1
+                                if(this.collision < 1) this.collision = 1;
+                				
+                			}
+                        else if(Math.round(this.x) < this.radius) 
+                        	{
+                        		PlayerTwoPoints++;
+                        		this.collision = 1.8;
+                        		this.x = canvas.width / 2;
+                        		this.y = canvas.height / 2;
+                        		this.xInverse = false;
+                        		linearSpeed = speed;
+                        		rocket.setStartPosition();
+                        		rocket_2.setStartPosition();
+                        	}
+
+                        	
+                              
+                            
+                        
+                	   	/////////////////////////////////
+                	   	//////Rakieta 2
+                		if(Math.round(this.y) >= rocket_2.y && Math.round(this.y) <= rocket_2.y + rocket_2.height && Math.round(this.x / 10) * 10 == rocket_2.x)
+                			{
+                                //jeśli uderzyła w górną lub w dolną część odwraca tor lotu piłki i określa kierunek po kolizji
+                				this.xInverse = true;
+                               
+                				pong_sound.play();
+
+                				if(Math.round(this.y) >= rocket_2.y && Math.round(this.y) < rocket_2.y + rocket_2.height / 2 )
+                				{
+                        
+                                    this.collision = (2 / (rocket_2.height / 2)) * (this.y - rocket_2.y);
+                					this.yInverse = true;
+                				}
+                				else if(Math.round(this.y) > rocket_2.y + rocket_2.height / 2 && Math.round(this.y) <= rocket_2.y + rocket_2.height)
+                				{
+                                    
+                                    this.collision = (2 / (rocket_2.height / 2)) * (rocket_2.height / 2-(this.y - rocket_2.y - rocket_2.height / 2)) ;
+                					this.yInverse = false;
+                				}
+                                //ustawia maksymalny kierunek nie mniejszy niż 1
+                                if(this.collision < 1) this.collision = 1;
+                				
+                			}
+                		else {
+                            if(Math.round(this.x) >= canvas.width - this.radius) 
+                            {
+                            	PlayerOnePoints++;
+                            	this.collision = 1.8;
+                        		this.x = canvas.width / 2;
+                        		this.y = canvas.height / 2;
+                        		this.xInverse = true;
+                        		linearSpeed = speed;
+                        		rocket.setStartPosition();
+                        		rocket_2.setStartPosition();
+                            }
+                            
+                        } 
+		                
+                		///////////////////////////////////////	
+		                if(Math.round(this.y) >= canvas.height - this.radius) this.yInverse = true; 
+		                else if(Math.round(this.y) <= this.radius) this.yInverse = false;
+
+                        if (this.xInverse == false) {
+                            this.x += linearDistEachFrame * this.collision;
+                            
+                            if (this.yInverse == false) {
+                                this.y += linearDistEachFrame * (2 - this.collision);
+                            }
+                            else {
+                                this.y -= linearDistEachFrame * (2 - this.collision);
+                            }
+	                    } 
+	                    else {
+	                    	this.x -= linearDistEachFrame * this.collision;
+                            
+                            if (this.yInverse == false) {
+                                this.y += linearDistEachFrame * (2 - this.collision);
+                            }
+                            else {
+                                this.y -= linearDistEachFrame * (2 - this.collision);
+                            }
+	                    }
+
+	
+	                    
+	                    context.beginPath();
+	                    context.fillStyle = this.color;
+	                    context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI,false);
+	                    context.fill();
+                	};
+                };
+
+/////////////// Klasa rakietek ///////////////////////
+
+                var createRocket = function(){
+                	this.width = 10;
+                	this.height = 100;
+                	this.y = canvas.height / 2 - (this.height / 2);
+                	this.x = 0;
+                	this.distance = 10;
+                	var that = this;
+                	this.speed = 0;
+                	this.setStartPosition = function(){
+                		this.y = canvas.height / 2 - (this.height / 2);
+                	}
+                	this.draw = function(){
+
+                		if(this.speed >= 1 && this.speed <= this.distance) this.speed++;
+                        else if(this.speed <= -1 && this.speed >= this.distance * -1) this.speed--;
+                        
+                        this.y += this.speed;
+
+                        if(this.y + this.height >= canvas.height || this.y <= 0)
+                        {
+                        	this.speed = 0;
+                        	if(this.y + this.height >= canvas.height) this.y = canvas.height - this.height
+                        	else if(this.y <= 0) this.y = 0;
+                        }
+                         
+     
+                		context.fillStyle = "white";
+                		context.fillRect(this.x, this.y, this.width, this.height);
+                	}
+                	this.Event = function(upButton, downButton){
+	                	document.addEventListener('keydown', function(event){
+						//83 = s, 87 = w, 40 = down, 38 = up
+							
+							if(event.keyCode == downButton && that.speed < 1) that.speed = 1;	
+							else if(event.keyCode == upButton && that.speed > -1) that.speed = -1;
+
+						});
+						document.addEventListener('keyup', function(event){
+
+							if(event.keyCode == downButton || event.keyCode == upButton) that.speed = 0;	
+						});
+
+                	}
+                };
+
+                var rocket = new createRocket();
+                rocket.Event(87, 83);
+                var rocket_2 = new createRocket();
+                rocket_2.Event(38, 40);
+                rocket_2.x = canvas.width - 10; //przerzucenie paletki na prawą stronę
+
+
+                var ball = new createBall();;
+                setInterval(function() {linearSpeed++;}, 400);
+
+
+                ///////////////////Rysowanie sceny - Pętla gry/////////
+               
+                myAnimation.setDrawStage(function(){
+                    // aktualizacja
+                    var linearDistEachFrame = linearSpeed * this.getTimeInterval() / 1000;
+                  	myAnimation.clear();
+
+
+                  	//Tło
+                  	context.fillStyle = "black";
+                  	context.fillRect(0, 0, canvas.width, canvas.height);
+
+                  	if(PlayerOnePoints == 10 || PlayerTwoPoints == 10)
+                  	{
+                  		context.font = "20pt Calibri";
+                  		context.fillStyle = "white";
+                  		let Winner;
+                  		if(PlayerOnePoints > PlayerTwoPoints) Winner = "Pierwszy";
+                  		else Winner = "Drugi";
+ 						context.fillText("Wygrał gracz " + Winner, canvas.width / 2 - 120 , 50);
+                  		myAnimation.stop();
+                  		return;
+                  	}
+
+                 
+                  	//Przegroda
+                  	context.fillStyle = "grey";
+                  	for(var i = 0; i < canvas.height; i++)
+                  	{
+                  		if(i % 20 == 0)
+                  		{
+                  			context.fillRect(canvas.width / 2, i, 4, 8);
+                  		}
+                  		
+                  	}
+
+                  	context.font = "30pt Calibri";
+                  	context.fillStyle = "white";
+                  	context.fillText(PlayerOnePoints + "   " + PlayerTwoPoints, canvas.width / 2 - 32, 100);
+     
+                  	rocket.draw();
+                  	rocket_2.draw();
+
+                  	ball.drawMe(linearDistEachFrame);
+
+                });
+
+           
+                myAnimation.start();
+           // };
+
+
+
+
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+</body>
+
+</html>
