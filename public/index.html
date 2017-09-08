@@ -6,6 +6,10 @@
 <body> 
 <div style="border: 1px solid black; width:800">
 <canvas id="canvas" style="width:800; height:600; border: 0px solid black;">  Canvas nie działa </canvas></div>
+<div style="width: 800px; height: 130px; background-color: grey"> 
+<button type=button name="PLayerOne" onclick="socket.emit('playerone', socket.id)">Gracz 1</button>
+<button type=button name="PLayerTwo" onclick="socket.emit('playertwo', socket.id)">Gracz 2</button>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
@@ -20,6 +24,7 @@
 
 //Sockety
 	var socket = io();
+
 
 
 //<<<<<<<
@@ -223,11 +228,19 @@ var myAnimation = new Animation("canvas");
                 };
 
                 socket.on("rocket_res", function(y){
-                	rocket_2.y = y;
+                	rocket.y = y;
                 	console.log(y);
                 });
 
+                rocket_2.emit = function(){
+                	socket.emit("rocket_2", rocket_2.y);
+                };
 
+                socket.on("rocket_2_res", function(y){
+                	rocket_2.y = y;
+                	console.log(y);
+                });
+       
 
                 //////>>>>>>>>>>>>>>>>>>>>>>
 
@@ -278,6 +291,7 @@ var myAnimation = new Animation("canvas");
                   	rocket.draw();
                   	rocket.emit();
                   	rocket_2.draw();
+                  	rocket_2.emit();
 
                   	ball.drawMe(linearDistEachFrame);
 
